@@ -13,7 +13,6 @@ export const HomeScreen = props => {
   const [location, setLocation] = React.useState('');
 
   const handleSubmit = () => {
-    if (time === '' || location === '') return
     axios.post('http://127.0.0.1:5000/get_parking_spot', {
       time, 
       startLocation: location
