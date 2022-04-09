@@ -20,7 +20,7 @@ def pay():
 
 @app.route("/get_parking_spot", methods=['POST'])
 def get_parking_spot():
-    abc = request
+    from_frontend = json.loads(request.data)
     return "test"
 
 if __name__ == '__main__':
@@ -113,8 +113,8 @@ def zones(parking_places_raw, df):
 
     return merge_zones
 
-koordinaty, df = get_coordinates()
-print(zones(koordinaty, df))
+#koordinaty, df = get_coordinates()
+#print(zones(koordinaty, df))
 #abc = UserRequest()
 #print(df.columns)
 #print(df)
