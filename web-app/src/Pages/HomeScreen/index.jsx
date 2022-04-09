@@ -6,6 +6,7 @@ import Location from '../../Components/Inputs/Location';
 import WhenInput from '../../Components/Inputs/WhenInput';
 import Title from '../../Components/Title';
 import Preferences from '../../Components/Inputs/Preferences';
+import axios from 'axios';
 
 export const HomeScreen = props => {
   const [time, setTime] = React.useState('');

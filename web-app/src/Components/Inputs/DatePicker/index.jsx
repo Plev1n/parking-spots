@@ -16,6 +16,7 @@ const DatePickerCustom = () => {
         onChange={(newValue) => {
           setDate(newValue);
         }}
+        disablePast
       />
     </LocalizationProvider>
   )
