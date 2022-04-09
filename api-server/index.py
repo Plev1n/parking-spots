@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,request
 from re import I
 import requests
 import json
@@ -9,18 +9,19 @@ from directionMatrix import countTimeDistance
 
 from models import ParkingSpot, ParkingHouse, UserRequest
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
-@app.route("/pay", methods=['POST'])
-def pay():
-    return "test"
+# @app.route("/pay", methods=['POST'])
+# def pay():
+#     return "test"
 
-@app.route("/get_parking_spot", methods=['POST'])
-def get_parking_spot():
-    return "test"
+# @app.route("/get_parking_spot", methods=['POST'])
+# def get_parking_spot():
+#     abc = request
+#     return "test"
 
-if __name__ == '__main__':
-    app.run()
+# if __name__ == '__main__':
+#     app.run()
     
 
 
@@ -46,6 +47,6 @@ parkingPaid = geopandas.GeoDataFrame.from_features(parse_geojson[0])
 parkingZones = geopandas.GeoDataFrame.from_features(parse_geojson[1])
 
 
-# list = []
-# list = countTimeDistance(55.93, -3.118, 50.087, 14.421, 'walking')
-# print(list)
+list = []
+list = countTimeDistance(55.93, -3.118, 50.087, 14.421, 'walking')
+print(list)
