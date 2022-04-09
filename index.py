@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,request
 from re import I
 import requests
 import json
@@ -6,6 +6,8 @@ import geojson
 import pandas as pd
 import geopandas
 from pandas.io.json import json_normalize
+from directionMatrix import countTimeDistance
+
 
 from models import ParkingSpot, ParkingHouse, UserRequest
 
@@ -13,10 +15,11 @@ app = Flask(__name__)
 
 @app.route("/pay", methods=['POST'])
 def pay():
-    return "test"
+     return "test"
 
 @app.route("/get_parking_spot", methods=['POST'])
 def get_parking_spot():
+    abc = request
     return "test"
 
 if __name__ == '__main__':
@@ -113,3 +116,14 @@ koordinaty, df = get_coordinates()
 print(zones(koordinaty, df))
 #print(df.columns)
 #print(df)
+=======
+l = 2
+response_API_geojsons = ['','']
+data_geojson = ['','']
+parse_geojson = ['','']
+for i in range (0,l):
+    response_API_geojsons[i] = requests.get(urls_Geo[i])
+    data_geojson[i] = response_API_geojsons[i].text
+    parse_geojson[i] = geojson.loads(data_geojson[i])
+parkingPaid = geopandas.GeoDataFrame.from_features(parse_geojson[0])
+parkingZones = geopandas.GeoDataFrame.from_features(parse_geojson[1])
