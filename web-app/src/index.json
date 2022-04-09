@@ -1,0 +1,35 @@
+[
+    {
+        "parkingSpotLatitude ": 200,
+        "parkingSpotLongitude": 123,
+        "distanceParking": 123,
+        "distanceTarget": 123,
+        "durationTarget": 123,
+        "price": 123,
+        "stroller": true,
+        "wheelchair": true,
+        "charger": false
+    },
+    {
+        "parkingSpotLatitude ": 200,
+        "parkingSpotLongitude": 123,
+        "distanceParking": 123,
+        "distanceTarget": 123,
+        "durationTarget": 123,
+        "price": 123,
+        "stroller": true,
+        "wheelchair": true,
+        "charger": false
+    },
+    {
+        "parkingSpotLatitude ": 200,
+        "parkingSpotLongitude": 123,
+        "distanceParking": 123,
+        "distanceTarget": 123,
+        "durationTarget": 123,
+        "price": 123,
+        "stroller": true,
+        "wheelchair": true,
+        "charger": false
+    }
+]
