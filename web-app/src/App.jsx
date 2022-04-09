@@ -1,46 +1,24 @@
-import { useState } from 'react'
-import logo from './logo.svg'
 import './App.css'
-import Button from '@mui/material/Button';
+import { HomePage } from "./Pages/HomePage"
+import SimpleBottomNavigation from "./Components/Navigation"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <Button variant='contained' onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </Button>
-        </p>
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+    <div>
+      <HomePage />
     </div>
   )
 }
 
 export default App
+
+
+//{/* <BrowserRouter>
+//<Routes>
+//<Route path="/" element={<SimpleBottomNavigation />}>
+//  <Route path="/home" element={<HomePage />} />
+//</Route>
+//</Routes>
+//</BrowserRouter> */}
