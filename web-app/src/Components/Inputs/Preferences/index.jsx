@@ -1,13 +1,18 @@
 import React from 'react'
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import AirportShuttleIcon from '@mui/icons-material/AirportShuttle';
+import AccessibleIcon from '@mui/icons-material/Accessible';
+import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
+import AddTaskIcon from '@mui/icons-material/AddTask';
 
-const Preferences = () => {
+const Preferences = (props) => {
   return (
-    <div>
-      <FormControlLabel control={<Checkbox />} label="Invalida" />
-      <FormControlLabel control={<Checkbox />} label="Kočárek" />
-      <FormControlLabel control={<Checkbox />} label="Nabíječka" />
+    <div style={{display: "flex", flexDirection: "column", margin: "0px"}}>
+      <FormControlLabel control={<Checkbox />} label="Osoba se sníženou mobilitou" />
+      <FormControlLabel control={<Checkbox />} label="Nabíječka elektromobilů" />
+      <FormControlLabel control={<Checkbox />} label="MPV, VAN, SUV do výšky 2,1m" />
+      <FormControlLabel control={<Checkbox />} label="Opatrný řidič" />
     </div>
   )
 }

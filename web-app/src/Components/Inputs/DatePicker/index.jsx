@@ -5,16 +5,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import csLocale from "date-fns/locale/cs";
 
-const DatePickerCustom = () => {
-  const [date, setDate] = React.useState(new Date());
+const DatePickerCustom = (props) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} locale={csLocale}>
       <DateTimePicker
         renderInput={(props) => <TextField {...props} />}
         label="Kdy"
-        value={date}
+        value={props.time}
         onChange={(newValue) => {
-          setDate(newValue);
+          props.setTime(newValue);
         }}
         disablePast
       />
