@@ -2,7 +2,7 @@ import React from 'react'
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TimeSlider from '../../Components/Inputs/TimeSlider';
-import WhereInput from '../../Components/Inputs/WhereInput';
+import Location from '../../Components/Inputs/Location';
 import WhenInput from '../../Components/Inputs/WhenInput';
 import Title from '../../Components/Title';
 import Preferences from '../../Components/Inputs/Preferences';
@@ -13,7 +13,10 @@ export const HomeScreen = props => {
 
   const handleSubmit = () => {
     if (time === '' || location === '') return
-    axios.post('http://127.0.0.1:5000/get_parking_spot', {})
+    axios.post('http://127.0.0.1:5000/get_parking_spot', {
+      time, 
+      startLocation: location
+    })
     .then(function (response) {
       console.log(response);
     })
@@ -26,7 +29,7 @@ export const HomeScreen = props => {
     <div style={{padding:"50px", display: "flex", alignItems: "center", justifyContent: "center"}}>
       <Stack spacing={2}>
         <Title />
-        <WhereInput setLocation={setLocation} />
+        <Location setLocation={setLocation} />
         <WhenInput setTime={setTime}/>
         <TimeSlider />
         <Preferences />
