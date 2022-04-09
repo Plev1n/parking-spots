@@ -18,8 +18,14 @@ const Location = (props) => {
   const [location, setLocation] = React.useState('')
 
   const handleChange = (address) => {
+    let lat, lon;
+    navigator.geolocation.getCurrentPosition(function (position) {
+      lat = position.coords.latitude;
+      lon = position.coords.longitude;
+      props.setStartLat(lat)
+      props.setStartLon(lon)
+    });
     setLocation(address)
-    props.setLocation(address)
   }
 
   const handleLocationSubmit = () => {
@@ -27,12 +33,13 @@ const Location = (props) => {
     navigator.geolocation.getCurrentPosition(function (position) {
       lat = position.coords.latitude;
       lon = position.coords.longitude;
-      console.log(lat, lon)
+      props.setStartLat(lat)
+      props.setStartLon(lon)
+      props.setFinishLat(lat)
+      props.setFinishLon(lon)
       Geocode.fromLatLng(lat, lon).then(
         (response) => {
           address = response.results[0].formatted_address;
-          console.log(address);
-          props.setLocation(address)
           setLocation(address)
         },
         (error) => {
@@ -45,7 +52,21 @@ const Location = (props) => {
   const handleSelect = address => {
     geocodeByAddress(address)
       .then(results => getLatLng(results[0]))
-      .then(latLng => console.log('Success', latLng))
+      .then(latLng => {
+        const lat = latLng.lat
+        const lon = latLng.lng
+        props.setFinishLat(lat)
+        props.setFinishLon(lon)
+        Geocode.fromLatLng(lat, lon).then(
+          (response) => {
+            address = response.results[0].formatted_address;
+            setLocation(address)
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
+      })
       .catch(error => console.error('Error', error));
   };
 
@@ -70,9 +91,11 @@ const Location = (props) => {
               id="outlined-basic"
               variant="outlined"
               {...getInputProps({
-                className: 'location-search-input',
+                className: '',
               })}
               onClick={() => showSelect(!isSelectShown)}
+              style={{width: "300px"}}
+              value={location}
             />
             <div className="autocomplete-dropdown-container">
               {loading && <div>Loading...</div>}

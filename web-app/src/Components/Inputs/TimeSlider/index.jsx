@@ -4,23 +4,23 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 
-const TimeSlider = () => {
-  let [seconds, setSeconds] = React.useState(5400)
+const TimeSlider = (props) => {
+  let seconds = props.parkingTime
 
   const handleAddTime = () => {
     if (seconds > 35999) {
-      setSeconds(seconds += 3600)
+      props.setParkingTime(seconds += 3600)
       return
     }
-    setSeconds(seconds += 1800);
+    props.setParkingTime(seconds += 1800);
   }
 
   const handleRemoveTime = () => {
     if (seconds > 36999) {
-      setSeconds(seconds -= 3600)
+      props.setParkingTime(seconds -= 3600)
       return
     }
-    setSeconds(seconds -= 1800);
+    props.setParkingTime(seconds -= 1800);
   }
 
   const getHoursAndMinutes = () => {
@@ -33,11 +33,13 @@ const TimeSlider = () => {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', gap: 10, margin: "0 auto" }}>
-      {/* <p>Doba parkování</p> */}
-      <IconButton disabled={seconds <= 0} onClick={handleRemoveTime}><ArrowBackIosNewIcon /></IconButton>
-      <p style={{ fontSize: "25px" }}>{getHoursAndMinutes()}</p>
-      <IconButton onClick={handleAddTime}><ArrowForwardIosIcon /></IconButton>
+    <div style={{ margin: "0 auto" }}>
+      {/* <p style={{margin: 0, textAlign: "left", fontSize: "10px" }}>Doba parkování</p> */}
+      <div style={{ display: 'flex', flexDirection: 'row', margin: "0 auto" }}>
+        <IconButton disabled={seconds <= 0} onClick={handleRemoveTime}><ArrowBackIosNewIcon /></IconButton>
+        <p style={{ fontSize: "25px" }}>{getHoursAndMinutes()}</p>
+        <IconButton onClick={handleAddTime}><ArrowForwardIosIcon /></IconButton>
+      </div>
     </div>
   )
 }
