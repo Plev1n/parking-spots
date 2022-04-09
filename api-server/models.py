@@ -10,10 +10,14 @@ class ParkingHouse():
         self.price = price    
         
 class UserRequest():
-    def __init__(self, latitude, longitude, parking_time, stroller, wheelchair, charger, parking_period):
+    def __init__(self, latitude, longitude, distanceParking, durationParking,distanceTarget, durationTarget, price, stroller, wheelchair, charger, parking_period):
         self.latitude = latitude
         self.longitude = longitude
-        self.parking_time = parking_time
+        self.distanceParking = distanceParking
+        self.durationParking = durationParking
+        self.distanceTarget = distanceTarget
+        self.durationTarget = durationTarget
+        self.price = price
         self.stroller = stroller
         self.wheelchair = wheelchair
         self.charger = charger
