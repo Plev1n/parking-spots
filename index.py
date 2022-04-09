@@ -1,4 +1,5 @@
 from flask import Flask
+from models import ParkingSpot
 
 app = Flask(__name__)
 
