@@ -1,5 +1,6 @@
 import './App.css'
 import { HomeScreen } from "./Pages/HomeScreen"
+import { ResultsScreen } from "./Pages/ResultsScreen"
 
 function App() {
 

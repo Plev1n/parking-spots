@@ -62,7 +62,7 @@ const Location = (props) => {
         onChange={handleChange}
         onSelect={handleSelect}
         searchOptions={searchOptions}
-      >
+        >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div>
             <TextField
