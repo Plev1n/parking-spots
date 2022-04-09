@@ -1,6 +1,3 @@
-from re import A
-from pygame import K_a
-
 
 class ParkingSpot():
     def __init__(self, name):
