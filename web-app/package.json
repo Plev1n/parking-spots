@@ -14,8 +14,11 @@
     "@mui/material": "^5.6.0",
     "@mui/x-date-pickers": "^5.0.0-alpha.0",
     "date-fns": "^2.28.0",
+    "mobx": "^6.5.0",
+    "moment": "^2.29.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-geocode": "^0.2.3",
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
