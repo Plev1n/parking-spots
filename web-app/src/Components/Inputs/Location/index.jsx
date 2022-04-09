@@ -9,7 +9,7 @@ Geocode.setApiKey("AIzaSyDy_tsEgUnqT0Pca81QJqzYVf_39Ox9IH4");
 Geocode.setRegion("cs");
 Geocode.enableDebug();
 
-const WhereInput = (props) => {
+const Location = (props) => {
   const [isSelectShown, showSelect] = React.useState(false)
   const [location, setLocation] = React.useState('')
 
@@ -47,4 +47,4 @@ const WhereInput = (props) => {
   )
 }
 
-export default WhereInput
+export default Location
