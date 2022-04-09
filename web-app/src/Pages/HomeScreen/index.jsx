@@ -13,8 +13,13 @@ export const HomeScreen = props => {
 
   const handleSubmit = () => {
     if (time === '' || location === '') return
-
-    console.log(time, location)
+    axios.post('http://127.0.0.1:5000/get_parking_spot', {})
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
 
   return (
