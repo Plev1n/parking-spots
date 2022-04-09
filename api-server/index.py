@@ -9,19 +9,19 @@ from directionMatrix import countTimeDistance
 
 from models import ParkingSpot, ParkingHouse, UserRequest
 
-# app = Flask(__name__)
+app = Flask(__name__)
 
-# @app.route("/pay", methods=['POST'])
-# def pay():
-#     return "test"
+@app.route("/pay", methods=['POST'])
+def pay():
+     return "test"
 
-# @app.route("/get_parking_spot", methods=['POST'])
-# def get_parking_spot():
-#     abc = request
-#     return "test"
+@app.route("/get_parking_spot", methods=['POST'])
+def get_parking_spot():
+    abc = request
+    return "test"
 
-# if __name__ == '__main__':
-#     app.run()
+if __name__ == '__main__':
+    app.run()
     
 
 
@@ -46,7 +46,3 @@ for i in range (0,l):
 parkingPaid = geopandas.GeoDataFrame.from_features(parse_geojson[0])
 parkingZones = geopandas.GeoDataFrame.from_features(parse_geojson[1])
 
-
-list = []
-list = countTimeDistance(55.93, -3.118, 50.087, 14.421, 'walking')
-print(list)
