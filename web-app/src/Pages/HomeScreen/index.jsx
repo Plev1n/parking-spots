@@ -10,32 +10,40 @@ import axios from 'axios';
 
 export const HomeScreen = props => {
   const [time, setTime] = React.useState(new Date());
-  const [location, setLocation] = React.useState('');
+  const [startLat, setStartLat] = React.useState('');
+  const [finishLat, setFinishLat] = React.useState('');
+  const [startLon, setStartLon] = React.useState('');
+  const [finishLon, setFinishLon] = React.useState('');
   const [parkingTime, setParkingTime] = React.useState(3600);
 
   const handleSubmit = () => {
-    if (location === '') return
-    console.log(time, location, parkingTime)
+    const timeISO = time.toISOString()
+    console.log(timeISO, parkingTime, startLat, startLon, finishLat, finishLon)
+
     axios.post('http://127.0.0.1:5000/get_parking_spot', {
-      time, 
-      startLocation: location
+      timeISO,
+      startLat,
+      startLon,
+      finishLat,
+      finishLon,
+      parkingTime
     })
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
   return (
-    <div style={{padding:"50px", display: "flex", alignItems: "center", justifyContent: "center"}}>
+    <div style={{ padding: "50px", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <Stack spacing={2}>
         <Title />
-        <Location setLocation={setLocation} />
-        <DatePickerCustom setTime={setTime} time={time}/>
-        <TimeSlider setParkingTime={setParkingTime} parkingTime={parkingTime}/>
-        {/* <Preferences /> */}
+        <Location setStartLat={setStartLat} setStartLon={setStartLon} setFinishLat={setFinishLat} setFinishLon={setFinishLon} />
+        <DatePickerCustom setTime={setTime} time={time} />
+        <TimeSlider setParkingTime={setParkingTime} parkingTime={parkingTime} />
+        <Preferences />
         <Button onClick={handleSubmit} variant="contained">Hledat</Button>
       </Stack>
     </div>
