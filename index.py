@@ -9,7 +9,6 @@ from pandas.io.json import json_normalize
 from directionMatrix import countTimeDistance
 from flask_cors import CORS
 
-
 from models import ParkingSpot, ParkingHouse, UserRequest
 
 app = Flask(__name__)
@@ -21,6 +20,8 @@ def pay():
 @app.route("/get_parking_spot", methods=['POST'])
 def get_parking_spot():
     from_frontend = json.loads(request.data)
+    print(from_frontend)
+    print(type(from_frontend))
     return "test"
 
 if __name__ == '__main__':
@@ -60,7 +61,9 @@ def get_coordinates():
 
     return parking_places_raw, df_merge.reset_index()
 
+#ZAPOJIT PARKOVACÍ DOMY
 def get_parking_house():
+    """Vrátí DF s umístěním a kapacitou parkovacích domů"""
     response_API_parkingHouse = requests.get('https://services6.arcgis.com/fUWVlHWZNxUvTUh8/arcgis/rest/services/carparks_live/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json')
     data_parkingHouse = response_API_parkingHouse.text
     parse_json = json.loads(data_parkingHouse)
@@ -72,12 +75,19 @@ def get_parking_house():
 
     return parking_House
 
-def objects(df): 
-    pass
+def objects(df):
+    lst_obj = []
+    for id, val in df.iterrows():
+        index, long, lat, dist, time = val
+        parkingSpot = UserRequest(lat, long, 0, 0, dist, time, 0, False, False, False)
+        lst_obj.append(json.dumps(parkingSpot.__dict__))
+    
+    return lst_obj
 
 #for future - def pro volání api
 def zones(parking_places_raw, df): 
-    """df musí mít id plochy, Latitude, Longtitude"""
+    """vrátí DataFrame se zónami, parking_places_raw musí být GeoDF
+    df musí mít id plochy, Latitude, Longtitude"""
     url_Geo = 'https://opendata.arcgis.com/datasets/cfcc180c1c3642109e17cf0b11387a0a_0.geojson'
     response_API_geojsons = requests.get(url_Geo)
     data_geojson = response_API_geojsons.text
@@ -87,7 +97,6 @@ def zones(parking_places_raw, df):
 
     zona_a = zony_raw[zony_raw["typzony_t"] == "zóna A"]
     zona_b = zony_raw[zony_raw["typzony_t"] == "zóna B"]
-    zona_c = zony_raw[zony_raw["typzony_t"] == "zóna C"]
 
     #přepočet na zóny - výstup parking_zones[id,zona]
     #pro verzi s API
@@ -113,6 +122,50 @@ def zones(parking_places_raw, df):
 
     return merge_zones
 
+def nearest(df, location):
+    """vrátí seznam id parkovacích míst do 1 km"""
+    near_df = []
+    x,y = location
+    #print(df)
+    for row in df.iterrows():
+        id, long, lat = row[1]
+        if (x > (lat - 0.01)) and (x < (lat + 0.01)): 
+            if (y > (long - 0.005)) and (y > (long + 0.005)):
+                near_df.append(id)
+    return near_df
+
+def filter_nearest(lst, df): 
+    return df[df["index"].isin(lst)]
+
+def count_T_D(df, location):
+    pd.options.mode.chained_assignment = None 
+    df["distance_m"] = 0
+    df["time"] = 0
+    counter = 0
+    for row in df.iterrows():
+        id, a, b, c, d = row[1]
+        lst = countTimeDistance(df["Latitude"][id], df["Longitude"][id], location[0], location[1],method="walking")
+        df["distance_m"][id] = lst[0]
+        df["time"].loc[id] = lst[1]
+
+        counter += 1
+        if counter == 1:
+            break
+
+    return df
+
+def main(): 
+    pp_raw, df = get_coordinates()
+    #print(df.shape)
+    lst_nearest = nearest(df, location)
+    #print(len(lst_nearest))
+    df_choice = filter_nearest(lst_nearest, df)
+    df_choice = count_T_D(df, location)
+    
+    #print(df_choice.head())
+    return "konec"
+location = (49.1985325, 16.6074342)
+print(main())
 #koordinaty, df = get_coordinates()
 #print(zones(koordinaty, df))
 #abc = UserRequest()
