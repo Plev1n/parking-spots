@@ -6,6 +6,7 @@ import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import Card from '../../Components/Results/Card';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme({
   components: {
@@ -15,15 +16,15 @@ const theme = createTheme({
           props: { variant: 'contained' },
           style: {
             color: "#fff",
-            backgroundColor: "rgba(0, 0, 0, 0.63)",
-            borderColor: "rgba(0, 0, 0, 0.63)"
+            backgroundColor: "rgba(0, 0, 0, 0.43)",
+            borderColor: "rgba(0, 0, 0, 0.43)"
           }
         },
         {
           props: { variant: 'outlined' },
           style: {
             color: "rgba(0, 0, 0, 0.63)",
-            borderColor: "rgba(0, 0, 0, 0.63)"
+            borderColor: "rgba(0, 0, 0, 0.43)"
           }
         }
       ]
@@ -37,9 +38,12 @@ export const ResultsScreen = props => {
     setButtonId(id)
   }
 
+  const navigate = useNavigate();
+
   return (
     <div style={{ margin: "0 auto", width: "500px" }}>
-      <div style={{ border: "1px solid rgba(0, 0, 0, 0.23)", margin: "20px 0", borderRadius: "10px" }}>
+      <Button onClick={() => {navigate("/");}} style={{display: "flex", justifyContent: "left", alignItems: "center", color: "#000", fontWeight: "bold"}}>Back</Button>
+      <div style={{ border: "1px solid rgba(0, 0, 0, 0.23)", marginBottom: "20px", borderRadius: "10px" }}>
         <p>Z <span style={{ fontWeight: "bold" }}>{"Czechitas"}</span> do <span style={{ fontWeight: "bold" }}>{"Kavárna Spolek"}</span></p>
         <p>ne 10.dubna 2022 11:37 doba parkování <span style={{ fontWeight: "bold" }}>{"1:30"}</span></p>
       </div>

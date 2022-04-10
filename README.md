@@ -10,3 +10,4 @@ React BE + FE TODO
 - [x] Location autocomplete
 - [x] Current time in date
 - [x] Warning of mask in console
+- [x] Routing
