@@ -7,6 +7,7 @@ import DatePickerCustom from '../../Components/Inputs/DatePicker';
 import Title from '../../Components/Title';
 import Preferences from '../../Components/Inputs/Preferences';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 export const HomeScreen = props => {
   const [time, setTime] = React.useState(new Date());
@@ -15,6 +16,8 @@ export const HomeScreen = props => {
   const [startLon, setStartLon] = React.useState('');
   const [finishLon, setFinishLon] = React.useState('');
   const [parkingTime, setParkingTime] = React.useState(3600);
+
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     const timeISO = time.toISOString()
@@ -30,9 +33,11 @@ export const HomeScreen = props => {
     })
       .then(function (response) {
         console.log(response);
+        navigate("/results");
       })
       .catch(function (error) {
         console.log(error);
+        navigate("/results");
       });
   }
 

@@ -10,23 +10,23 @@ const Card = ({ location, }) => {
   return (
     <CardOrg variant="outlined" style={{marginTop: "20px", paddingBottom: "20px", borderColor: "rgba(0, 0, 0, 0.23)", borderRadius: "10px"}} >
       <div style={{height: "50px", flexDirection: "row", gap: "50px", display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0, 0, 0, 0.13)" }}>
-        Parkoviště ulice whatever
+        <span style={{fontWeight: "bold", fontSize: "22px"}}>Parkoviště ulice whatever</span>
       </div>
       <Divider />
       <div style={{ flexDirection: "row", display: "flex", gap: "10px", alignContent: "space-between", justifyContent: "center", alignItems: "center", height: "50px" }}>
         <div>
-          Volných míst xx z xx
+          <span style={{fontWeight: "bold"}}>Volných míst</span> xx z xx
         </div>
         <div>
-          Nehodovost x/měsíc
+          <span style={{fontWeight: "bold"}}>Nehodovost</span> x/měsíc
         </div>
         <div>
-          Přestupků x/měsíc
+          <span style={{fontWeight: "bold"}}>Přestupků</span> x/měsíc
         </div>
       </div>
       <Divider />
       <div style={{flexDirection: "row", display: "flex", justifyContent: "center", alignItems: "center", alignContent: "space-around", gap:"150px", margin: "0 30px"}}>
-        <p>Parkování za cenu: xx Kč</p>
+        <p><span style={{fontWeight: "bold"}}>Parkování za cenu:</span> xx Kč</p>
         <Button onClick={() => alert("Není co zaplatit!")} variant="outlined">Zaplatit</Button>
       </div>
       <div style={{ flexDirection: "row", gap: "15px", display: "flex", justifyContent: "center", alignItems: "center" }}>
