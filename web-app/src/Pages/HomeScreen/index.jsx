@@ -37,7 +37,6 @@ export const HomeScreen = props => {
       })
       .catch(function (error) {
         console.log(error);
-        navigate("/results");
       });
   }
 
