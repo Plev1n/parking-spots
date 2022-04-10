@@ -21,8 +21,10 @@ def pay():
 @app.route("/get_parking_spot", methods=['POST'])
 def get_parking_spot():
     from_frontend = json.loads(request.data)
-    df = main(from_frontend)
-    return obj_json(df)
+    df_street = main(from_frontend)
+    #df_house = houses_main(from_frontend)
+    #print(df_house)
+    return obj_json(df_street) #to_json_houses(df_house)
 
 def get_coordinates(): 
     #Peťa - načítání API
@@ -47,8 +49,8 @@ def get_coordinates():
         coordinates = place[0][0].exterior.coords[:-1][1]
         df_coordinates.loc[num] = [coordinates[0], coordinates[1]]
 
-    print(df_coordinates.reset_index().columns)
-    print(df_zones.reset_index().columns)
+    #print(df_coordinates.reset_index().columns)
+    #print(df_zones.reset_index().columns)
     df_coordinates = df_coordinates.reset_index()
     df_coordinates = df_coordinates.merge(df_zones, on="index", how="right")
 
@@ -71,9 +73,34 @@ def get_parking_house():
     parkingHouse = pd.json_normalize(parkingHouse)
 
     #parkoviště
-    parking_House = parkingHouse[["attributes.name", "attributes.Latitude", "attributes.Longitude", "attributes.CapacityForPublic", "attributes.spacesAllUsersVacant"]]
+    parking_house = parkingHouse[["attributes.name", "attributes.Latitude", "attributes.Longitude", "attributes.CapacityForPublic", "attributes.spacesAllUsersVacant"]]
 
-    return parking_House
+    return parking_house
+
+def parking_houses_calc(df, coordinates):
+    df = df.reset_index()
+    
+    df_filtr = df.drop(columns=["attributes.name", "attributes.CapacityForPublic", "attributes.spacesAllUsersVacant"])
+
+    lst = nearest(df_filtr, coordinates)
+    near = filter_nearest(lst, df)
+
+    return near[near["attributes.spacesAllUsersVacant"] > 3]
+
+def to_json_houses(parking_house):
+    lst_obj = []
+    for i, val in parking_house.iterrows(): 
+        name, lat, long, max_capacity, spaces = val
+        parkingHouse = ParkingHouse(name, spaces, max_capacity, 0)
+        lst_obj.append(json.dumps(parkingHouse.__dict__))
+    return str(lst_obj)
+
+def houses_main(dct): 
+    df = get_parking_house()
+    df_filtred = parking_houses_calc(df,[dct["finishLat"], dct["finishLon"]])
+    df_choice = count_walking(df_filtred, dct["finishLat"], dct["finishLon"])
+    df_choice = count_driving(df_choice, dct["startLat"], dct["startLon"])
+    return df_choice
 
 def obj_json(df):
     lst_obj = []
@@ -81,8 +108,7 @@ def obj_json(df):
         index, long, lat, dist_w, time_w, dist_d, time_d, price = val
         parkingSpot = UserRequest(lat, long, dist_d, time_d, dist_w, time_w, price, False, False, False)
         lst_obj.append(json.dumps(parkingSpot.__dict__))
-    
-    return str(lst_obj)
+    return str(lst_obj).replace("'", "")
 
 #for future - def pro volání api
 def zones(parking_places_raw): 
@@ -127,7 +153,7 @@ def nearest(df, location):
     x,y = location
     #print(df)
     for row in df.iterrows():
-        id, long, lat, zone = row[1]
+        id, long, lat, *zone = row[1]
         if (x > (lat - 0.01)) and (x < (lat + 0.01)): 
             if (y > (long - 0.005)) and (y > (long + 0.005)):
                 near_df.append(id)
@@ -149,7 +175,7 @@ def count_walking(df, fin_lat, fin_lon):
         df["walking_time_s"].loc[id] = lst[1]
 
         counter += 1
-        if counter == 1:
+        if counter == 8:
             break
 
     return df
@@ -166,7 +192,7 @@ def count_driving(df, start_lat, start_lon):
         df["driving_time_s"].loc[id] = lst[1]
 
         counter += 1
-        if counter == 1:
+        if counter == 8:
             break
 
     return df
@@ -189,7 +215,7 @@ def count_price(df,dct):
 
 
 def main(dct): 
-    print(dct)
+    #print(dct)
     df = get_coordinates()
     lst_nearest = nearest(df, [dct["finishLat"], dct["finishLon"]])
     #print(len(lst_nearest))
@@ -198,8 +224,8 @@ def main(dct):
     df_choice = count_driving(df_choice, dct["startLat"], dct["startLon"])
     df_choice = count_price(df_choice, dct)
     
-    print(df_choice[df_choice["walking_distance_m"] > 0])
-    return df_choice[df_choice["walking_distance_m"] > 0]
+    #print(df_choice[df_choice["walking_distance_m"] > 0])
+    return df_choice[df_choice["walking_distance_m"] > 0].sort_values(by=["walking_distance_m"])
 
 def countTimeDistance (originLat, originLon, destinationLat, destinationLon,method):
     API_key = 'AIzaSyDy_tsEgUnqT0Pca81QJqzYVf_39Ox9IH4'#enter Google Maps API key
