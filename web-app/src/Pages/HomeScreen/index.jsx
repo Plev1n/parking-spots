@@ -23,7 +23,12 @@ export const HomeScreen = props => {
   const handleSubmit = () => {
     const timeISO = time.toISOString()
     console.log(timeISO, parkingTime, startLat, startLon, finishLat, finishLon)
-
+    localStorage.setItem("parkingTime", parkingTime)
+    localStorage.setItem("time", timeISO)
+    localStorage.setItem("startLat", startLat)
+    localStorage.setItem("startLon", startLon)
+    localStorage.setItem("finishLon", finishLon)
+    localStorage.setItem("finishLat", finishLat)
     axios.post('https://enigmatic-mountain-28502.herokuapp.com/get_parking_spot', {
       timeISO,
       startLat,
