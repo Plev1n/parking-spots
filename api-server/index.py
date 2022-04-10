@@ -22,12 +22,10 @@ def pay():
 def get_parking_spot():
     from_frontend = json.loads(request.data)
     df_street = main(from_frontend)
-    #df_house = houses_main(from_frontend)
-    #print(df_house)
-    return obj_json(df_street) #to_json_houses(df_house)
+    df_house = houses_main(from_frontend)
+    return obj_json(df_street), to_json_houses(df_house)
 
 def get_coordinates(): 
-    #Peťa - načítání API
 
     urls_Geo = "https://opendata.arcgis.com/datasets/9a2eda1b0c604886b0dd1eb548fb351b_0.geojson"
 
@@ -79,26 +77,27 @@ def get_parking_house():
 
 def parking_houses_calc(df, coordinates):
     df = df.reset_index()
+    df = df.rename(columns={"attributes.Longitude": "Longitude", "attributes.Latitude": "Latitude"})
     
-    df_filtr = df.drop(columns=["attributes.name", "attributes.CapacityForPublic", "attributes.spacesAllUsersVacant"])
-
-    lst = nearest(df_filtr, coordinates)
+    df_filtr = df[["index", "Longitude", "Latitude"]]
+    lst = nearest(df_filtr, coordinates, 0.01, 0.01)
     near = filter_nearest(lst, df)
-
     return near[near["attributes.spacesAllUsersVacant"] > 3]
 
 def to_json_houses(parking_house):
+    #chybí - cena + vrátit délku parkování
     lst_obj = []
     for i, val in parking_house.iterrows(): 
-        name, lat, long, max_capacity, spaces = val
-        parkingHouse = ParkingHouse(name, spaces, max_capacity, 0)
+        index, name, lat, long, max_capacity, spaces, walking_distance_m, walking_time_s, driving_distance_m, driving_time_s = val
+        parkingHouse = ParkingHouse(name, spaces, max_capacity, -1, lat, long, driving_distance_m, 0, walking_distance_m, walking_time_s)
         lst_obj.append(json.dumps(parkingHouse.__dict__))
-    return str(lst_obj)
+    return str(lst_obj).replace("'", "")
 
 def houses_main(dct): 
     df = get_parking_house()
     df_filtred = parking_houses_calc(df,[dct["finishLat"], dct["finishLon"]])
     df_choice = count_walking(df_filtred, dct["finishLat"], dct["finishLon"])
+    #print(df_choice)
     df_choice = count_driving(df_choice, dct["startLat"], dct["startLon"])
     return df_choice
 
@@ -147,15 +146,14 @@ def zones(parking_places_raw):
 
     return zones
 
-def nearest(df, location):
+def nearest(df, location, val_x, val_y):
     """vrátí seznam id parkovacích míst do 1 km"""
     near_df = []
     x,y = location
-    #print(df)
     for row in df.iterrows():
         id, long, lat, *zone = row[1]
-        if (x > (lat - 0.01)) and (x < (lat + 0.01)): 
-            if (y > (long - 0.005)) and (y > (long + 0.005)):
+        if (x > (lat - val_x)) and (x < (lat + val_x)): 
+            if (y > (long - val_y)) and (y < (long + val_y)):
                 near_df.append(id)
     return near_df
 
@@ -175,7 +173,7 @@ def count_walking(df, fin_lat, fin_lon):
         df["walking_time_s"].loc[id] = lst[1]
 
         counter += 1
-        if counter == 8:
+        if counter == 3:
             break
 
     return df
@@ -192,7 +190,7 @@ def count_driving(df, start_lat, start_lon):
         df["driving_time_s"].loc[id] = lst[1]
 
         counter += 1
-        if counter == 8:
+        if counter == 3:
             break
 
     return df
@@ -217,7 +215,7 @@ def count_price(df,dct):
 def main(dct): 
     #print(dct)
     df = get_coordinates()
-    lst_nearest = nearest(df, [dct["finishLat"], dct["finishLon"]])
+    lst_nearest = nearest(df, [dct["finishLat"], dct["finishLon"]], 0.005, 0.005)
     #print(len(lst_nearest))
     df_choice = filter_nearest(lst_nearest, df)
     df_choice = count_walking(df_choice, dct["finishLat"], dct["finishLon"])
