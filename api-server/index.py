@@ -1,14 +1,15 @@
 from flask import Flask,request
-from re import I
+# from re import I
 import requests
 import json
 import geojson
+import googlemaps
 import pandas as pd
 import geopandas
-from pandas.io.json import json_normalize
-from directionMatrix import countTimeDistance
+import math
+from datetime import datetime
+# from pandas.io.json import json_normalize
 from flask_cors import CORS
-
 from models import ParkingSpot, ParkingHouse, UserRequest
 
 app = Flask(__name__)
@@ -35,27 +36,30 @@ def get_coordinates():
     parkingPaid = geopandas.GeoDataFrame.from_features(parse_geojson)
 
     #Petra - načítání 
-    parking_places_raw = parkingPaid
+    parking_raw = parkingPaid
+    df_zones = zones(parking_raw).reset_index()
 
+    #parking_geo = parking_raw.merge(df_zones, on="index", how="right")
     #vyházení koordinátů z polygonů, výstup json_coordinates[id,x,y]
     #verze pro API
-    parking_json = parking_places_raw.copy()
-    #parking_json1 = parking_json["geometry"]
-    json_coordinates = pd.DataFrame({"id": [], "Longitude": [], "Latitude": []}).set_index("id")
-    for num, place in parking_json.iterrows():
+    df_coordinates = pd.DataFrame({"index": [], "Longitude": [], "Latitude": []}).set_index("index")
+    for num, place in parking_raw.iterrows():
         coordinates = place[0][0].exterior.coords[:-1][1]
-        json_coordinates.loc[num] = [coordinates[0], coordinates[1]]
+        df_coordinates.loc[num] = [coordinates[0], coordinates[1]]
 
-    coordinates = json_coordinates#.reset_index()
+    print(df_coordinates.reset_index().columns)
+    print(df_zones.reset_index().columns)
+    df_coordinates = df_coordinates.reset_index()
+    df_coordinates = df_coordinates.merge(df_zones, on="index", how="right")
 
     #df_merge = coordinates.merge(zones, on="id").set_index("id")
 
     #parkoviště
-    parking_house = get_parking_house()[["attributes.Latitude", "attributes.Longitude"]]
-    parking_house = parking_house.rename(columns={"attributes.Latitude": "Latitude", "attributes.Longitude": "Longitude"})
-    df_merge = pd.concat([coordinates, parking_house], ignore_index=True)
+    #parking_house = get_parking_house()[["attributes.Latitude", "attributes.Longitude"]]
+    #parking_house = parking_house.rename(columns={"attributes.Latitude": "Latitude", "attributes.Longitude": "Longitude"})
+    #df_merge = pd.concat([coordinates, parking_house], ignore_index=True)
 
-    return parking_places_raw, df_merge.reset_index()
+    return df_coordinates
 
 #ZAPOJIT PARKOVACÍ DOMY
 def get_parking_house():
@@ -74,14 +78,14 @@ def get_parking_house():
 def obj_json(df):
     lst_obj = []
     for id, val in df.iterrows():
-        index, long, lat, dist_w, time_w, dist_d, time_d = val
-        parkingSpot = UserRequest(lat, long, dist_d, time_d, dist_w, time_w, 0, False, False, False)
+        index, long, lat, dist_w, time_w, dist_d, time_d, price = val
+        parkingSpot = UserRequest(lat, long, dist_d, time_d, dist_w, time_w, price, False, False, False)
         lst_obj.append(json.dumps(parkingSpot.__dict__))
     
     return str(lst_obj)
 
 #for future - def pro volání api
-def zones(parking_places_raw, df): 
+def zones(parking_places_raw): 
     """vrátí DataFrame se zónami, parking_places_raw musí být GeoDF
     df musí mít id plochy, Latitude, Longtitude"""
     url_Geo = 'https://opendata.arcgis.com/datasets/cfcc180c1c3642109e17cf0b11387a0a_0.geojson'
@@ -105,18 +109,17 @@ def zones(parking_places_raw, df):
         else: 
             for zona in zona_a.iterrows():
                 if zona[1][0].contains(place[0]): 
-                    parking_zones.loc[num] = "A"
+                    #parking_zones.loc[num] = "A"
                     break
             else: 
                 parking_zones.loc[num] = "C"
 
-    zones = parking_zones.reset_index()
-    df = df.rename(columns={"index": "id"})
+    zones = parking_zones.reset_index().drop(columns=["id"])
+    #df = df.rename(columns={"index": "id"})
 
+    #merge_zones = df.merge(zones, on="id", how="inner")
 
-    merge_zones = df.merge(zones, on="id")
-
-    return merge_zones
+    return zones
 
 def nearest(df, location):
     """vrátí seznam id parkovacích míst do 1 km"""
@@ -124,7 +127,7 @@ def nearest(df, location):
     x,y = location
     #print(df)
     for row in df.iterrows():
-        id, long, lat = row[1]
+        id, long, lat, zone = row[1]
         if (x > (lat - 0.01)) and (x < (lat + 0.01)): 
             if (y > (long - 0.005)) and (y > (long + 0.005)):
                 near_df.append(id)
@@ -146,7 +149,7 @@ def count_walking(df, fin_lat, fin_lon):
         df["walking_time_s"].loc[id] = lst[1]
 
         counter += 1
-        if counter == 5:
+        if counter == 1:
             break
 
     return df
@@ -163,22 +166,56 @@ def count_driving(df, start_lat, start_lon):
         df["driving_time_s"].loc[id] = lst[1]
 
         counter += 1
-        if counter == 5:
+        if counter == 1:
             break
 
     return df
 
+def count_price(df,dct):
+    parking_time = dct["parkingTime"]
+    str_time = dct["timeISO"]
+
+    hr = datetime.strptime(str_time, '%Y-%m-%dT%H:%M:%S.%f%z').hour
+
+    df["price"] = 1
+    if hr < 6 or hr > 17:
+        df["price"] = (math.ceil(parking_time/3600))*20
+    
+    lst = df[df["zona"] == "B"]["index"]
+    for i in lst:
+        df["price"][i] == (math.ceil(parking_time/3600))*30
+    
+    return df.drop(columns=["zona"])
+
+
 def main(dct): 
-    pp_raw, df = get_coordinates()
-    #print(df.shape)
+    print(dct)
+    df = get_coordinates()
     lst_nearest = nearest(df, [dct["finishLat"], dct["finishLon"]])
     #print(len(lst_nearest))
     df_choice = filter_nearest(lst_nearest, df)
     df_choice = count_walking(df_choice, dct["finishLat"], dct["finishLon"])
     df_choice = count_driving(df_choice, dct["startLat"], dct["startLon"])
+    df_choice = count_price(df_choice, dct)
     
+    print(df_choice[df_choice["walking_distance_m"] > 0])
     return df_choice[df_choice["walking_distance_m"] > 0]
 
+def countTimeDistance (originLat, originLon, destinationLat, destinationLon,method):
+    API_key = 'AIzaSyDy_tsEgUnqT0Pca81QJqzYVf_39Ox9IH4'#enter Google Maps API key
+    gmaps = googlemaps.Client(key=API_key)
+    list = [0,0]
+    jsonv = [0]
+
+    origins = (originLat,originLon)
+
+    destination = (destinationLat,destinationLon)
+
+    jsonv = gmaps.distance_matrix(origins, destination, mode=method)
+    list[0] = jsonv.get('rows')[0].get('elements')[0].get('distance').get('value')  #distance
+    list[1] = jsonv.get('rows')[0].get('elements')[0].get('duration').get('value')  #time
+      
+    return list
 
 #location = (49.1985325, 16.6074342)
 #koordinaty, df = get_coordinates()
