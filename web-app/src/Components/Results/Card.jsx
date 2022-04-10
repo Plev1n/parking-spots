@@ -56,12 +56,12 @@ const Card = ({ data }) => {
       <DirectionsCarIcon fontSize="large" color="success" style={{color: "#F39C12"}} />
       <div>
         <div style={{border: "2px solid #F39C12", marginBottom: "2px"}}></div>
-        <Button onClick={() => {window.open(`https://www.google.com/maps/@${data.parkingSpotLatitude},${data.parkingSpotLongitude}`, "_blank")}} style={{width: "30px", height: "25px", color: "#fff", backgroundColor: "rgba(0, 0, 0, 0.33)", fontSize: "12px", borderColor: "rgba(0, 0, 0, 0.33)"}} variant="outlined">Začít</Button>
+        <Button onClick={() => {window.open(`https://maps.google.com?saddr=My%20Location&daddr=${data.parkingSpotLatitude},${data.parkingSpotLongitude}`, "_blank")}} style={{width: "30px", height: "25px", color: "#fff", backgroundColor: "rgba(0, 0, 0, 0.33)", fontSize: "12px", borderColor: "rgba(0, 0, 0, 0.33)"}} variant="outlined">Začít</Button>
       </div>
       <LocalParkingIcon fontSize="large" color="primary" />
       <div>
         <div style={{border: "2px solid #27AE60", marginBottom: "2px"}}></div>
-        <Button onClick={() => {window.open("https://www.google.com/maps/@49.1966628,16.6343531", "_blank")}} style={{width: "30px", height: "25px", color: "#fff", backgroundColor: "rgba(0, 0, 0, 0.33)", fontSize: "12px", borderColor: "rgba(0, 0, 0, 0.43)"}} variant="outlined">Začít</Button>
+        <Button onClick={() => {window.open(`https://maps.google.com?saddr=${data.parkingSpotLatitude},${data.parkingSpotLongitude}`, "_blank")}} style={{width: "30px", height: "25px", color: "#fff", backgroundColor: "rgba(0, 0, 0, 0.33)", fontSize: "12px", borderColor: "rgba(0, 0, 0, 0.43)"}} variant="outlined">Začít</Button>
       </div>
       <DirectionsRunIcon fontSize="large" style={{color: "#27AE60"}} />
       </div>
