@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start": "node src/main.jsx",
+    "start": "vite",
     "preview": "vite preview"
   },
   "dependencies": {
