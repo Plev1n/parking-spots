@@ -20,12 +20,8 @@ def pay():
 @app.route("/get_parking_spot", methods=['POST'])
 def get_parking_spot():
     from_frontend = json.loads(request.data)
-    print(from_frontend)
-    print(type(from_frontend))
-    return "test"
-
-if __name__ == '__main__':
-    app.run()
+    df = main(from_frontend)
+    return obj_json(df)
 
 def get_coordinates(): 
     #Peťa - načítání API
@@ -75,14 +71,14 @@ def get_parking_house():
 
     return parking_House
 
-def objects(df):
+def obj_json(df):
     lst_obj = []
     for id, val in df.iterrows():
-        index, long, lat, dist, time = val
-        parkingSpot = UserRequest(lat, long, 0, 0, dist, time, 0, False, False, False)
+        index, long, lat, dist_w, time_w, dist_d, time_d = val
+        parkingSpot = UserRequest(lat, long, dist_d, time_d, dist_w, time_w, 0, False, False, False)
         lst_obj.append(json.dumps(parkingSpot.__dict__))
     
-    return lst_obj
+    return str(lst_obj)
 
 #for future - def pro volání api
 def zones(parking_places_raw, df): 
@@ -137,37 +133,59 @@ def nearest(df, location):
 def filter_nearest(lst, df): 
     return df[df["index"].isin(lst)]
 
-def count_T_D(df, location):
+def count_walking(df, fin_lat, fin_lon):
+    #walking
     pd.options.mode.chained_assignment = None 
-    df["distance_m"] = 0
-    df["time"] = 0
+    df["walking_distance_m"] = 0
+    df["walking_time_s"] = 0
     counter = 0
     for row in df.iterrows():
-        id, a, b, c, d = row[1]
-        lst = countTimeDistance(df["Latitude"][id], df["Longitude"][id], location[0], location[1],method="walking")
-        df["distance_m"][id] = lst[0]
-        df["time"].loc[id] = lst[1]
+        id, *rest = row[1]
+        lst = countTimeDistance(df["Latitude"][id], df["Longitude"][id], fin_lat, fin_lon,method="walking")
+        df["walking_distance_m"][id] = lst[0]
+        df["walking_time_s"].loc[id] = lst[1]
 
         counter += 1
-        if counter == 1:
+        if counter == 5:
             break
 
     return df
 
-def main(): 
+def count_driving(df, start_lat, start_lon): 
+    pd.options.mode.chained_assignment = None 
+    df["driving_distance_m"] = 0
+    df["driving_time_s"] = 0
+    counter = 0
+    for row in df.iterrows():
+        id, *rest = row[1]
+        lst = countTimeDistance(start_lat, start_lon, df["Latitude"][id], df["Longitude"][id], method="driving")
+        df["driving_distance_m"].loc[id] = lst[0]
+        df["driving_time_s"].loc[id] = lst[1]
+
+        counter += 1
+        if counter == 5:
+            break
+
+    return df
+
+def main(dct): 
     pp_raw, df = get_coordinates()
     #print(df.shape)
-    lst_nearest = nearest(df, location)
+    lst_nearest = nearest(df, [dct["finishLat"], dct["finishLon"]])
     #print(len(lst_nearest))
     df_choice = filter_nearest(lst_nearest, df)
-    df_choice = count_T_D(df, location)
+    df_choice = count_walking(df_choice, dct["finishLat"], dct["finishLon"])
+    df_choice = count_driving(df_choice, dct["startLat"], dct["startLon"])
     
-    #print(df_choice.head())
-    return "konec"
-location = (49.1985325, 16.6074342)
-print(main())
+    return df_choice[df_choice["walking_distance_m"] > 0]
+
+
+#location = (49.1985325, 16.6074342)
 #koordinaty, df = get_coordinates()
 #print(zones(koordinaty, df))
 #abc = UserRequest()
 #print(df.columns)
 #print(df)
+
+if __name__ == '__main__':
+    app.run()
