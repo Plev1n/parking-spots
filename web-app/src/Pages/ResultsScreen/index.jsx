@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Card from '../../Components/Results/Card';
@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
 import Geocode from "react-geocode";
 import data from "../../index.json"
+import moment from "moment";
 
 Geocode.setApiKey("AIzaSyDy_tsEgUnqT0Pca81QJqzYVf_39Ox9IH4");
 Geocode.setRegion("cs");
@@ -55,10 +56,10 @@ export const ResultsScreen = props => {
 
   return (
     <div style={{ margin: "0 auto", width: "90%" }}>
-      <Button onClick={() => { navigate("/"); }} style={{ display: "flex", justifyContent: "left", alignItems: "center", color: "#000", fontWeight: "bold" }}>Back</Button>
-      <div style={{ border: "1px solid rgba(0, 0, 0, 0.23)", marginBottom: "20px", borderRadius: "10px" }}>
+      {/* <Button onClick={() => { navigate("/"); }} style={{ display: "flex", justifyContent: "left", alignItems: "center", color: "#000", fontWeight: "bold" }}>Back</Button> */}
+      <div style={{ border: "1px solid rgba(0, 0, 0, 0.23)", margin: "20px 0", borderRadius: "10px" }}>
         <p>Z <span style={{ fontWeight: "bold" }}>{localStorage.getItem("startLocation")}</span> do <span style={{ fontWeight: "bold" }}>{localStorage.getItem("location")}</span></p>
-        <p><span style={{ fontWeight: "bold" }}>{localStorage.getItem("time").toString()}</span> doba parkování <span style={{ fontWeight: "bold" }}>{getHoursAndMinutes(localStorage.getItem("parkingTime"))}</span></p>
+        <p><span style={{ fontWeight: "bold" }}>{moment(localStorage.getItem("time")).format('DD MMMM YYYY, h:mm')}</span> doba parkování <span style={{ fontWeight: "bold" }}>{getHoursAndMinutes(localStorage.getItem("parkingTime"))}</span></p>
       </div>
       <ThemeProvider theme={theme}>
         <ButtonGroup aria-label="outlined primary button group" style={{ width: "100%", borderColor: "rgba(0, 0, 0, 0.63)" }}>

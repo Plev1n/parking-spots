@@ -39,13 +39,13 @@ const Card = ({ data }) => {
       <Divider />
       <div style={{ flexDirection: "row", display: "flex", gap: "10px", alignContent: "space-between", justifyContent: "center", alignItems: "center", height: "50px" }}>
         <div>
-          <span style={{fontWeight: "bold"}}>Volných míst</span> xx z xx
+          <span style={{fontWeight: "bold"}}>Volných míst</span> {data?.freeSpots ? data?.freeSpots : 0} z {data?.maxCapacity ? data?.maxCapacity : 0}
         </div>
         <div>
-          <span style={{fontWeight: "bold"}}>Nehodovost</span> x/měsíc
+          <span style={{fontWeight: "bold"}}>Nehodovost</span> 0,2 /měsíc
         </div>
         <div>
-          <span style={{fontWeight: "bold"}}>Přestupků</span> x/měsíc
+          <span style={{fontWeight: "bold"}}>Přestupků</span> 0 /měsíc
         </div>
       </div>
       <Divider />

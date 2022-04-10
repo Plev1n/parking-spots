@@ -29,7 +29,7 @@ export const HomeScreen = props => {
     localStorage.setItem("startLon", startLon)
     localStorage.setItem("finishLon", finishLon)
     localStorage.setItem("finishLat", finishLat)
-    axios.post('https://enigmatic-mountain-28502.herokuapp.com/get_parking_spot', {
+    /* axios.post('https://enigmatic-mountain-28502.herokuapp.com/get_parking_spot', {
       timeISO,
       startLat,
       startLon,
@@ -39,12 +39,15 @@ export const HomeScreen = props => {
     })
       .then(function (response) {
         setResponse(response)
+        localStorage.setItem("response", JSON.stringify(response.data))
         navigate("/results");
       })
       .catch(function (error) {
         console.log(error);
+      }); */
+      setTimeout(() => {
         navigate("/results");
-      });
+      }, 3000);
   }
 
   return (
