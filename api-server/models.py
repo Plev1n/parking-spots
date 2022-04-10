@@ -1,8 +1,3 @@
-
-class ParkingSpot():
-    def __init__(self, name):
-        self.name = name
-        
 class ParkingHouse():
     def __init__(self, name, freeSpots, maxCapacity, price, parkingSpotLatitude, parkingSpotLongitude, distanceParking, durationParking,distanceTarget, durationTarget):
         self.name = name
