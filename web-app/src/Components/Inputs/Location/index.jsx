@@ -94,7 +94,7 @@ const Location = (props) => {
                 className: '',
               })}
               onClick={() => showSelect(!isSelectShown)}
-              style={{width: "300px"}}
+              style={{width: "500px"}}
               value={location}
             />
             <div className="autocomplete-dropdown-container">
