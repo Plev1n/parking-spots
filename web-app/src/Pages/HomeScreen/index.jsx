@@ -16,6 +16,7 @@ export const HomeScreen = props => {
   const [startLon, setStartLon] = React.useState('');
   const [finishLon, setFinishLon] = React.useState('');
   const [parkingTime, setParkingTime] = React.useState(3600);
+  const [response, setResponse] = React.useState(null);
 
   const navigate = useNavigate();
 
@@ -32,11 +33,12 @@ export const HomeScreen = props => {
       parkingTime
     })
       .then(function (response) {
-        console.log(response);
+        setResponse(response)
         navigate("/results");
       })
       .catch(function (error) {
         console.log(error);
+        navigate("/results");
       });
   }
 

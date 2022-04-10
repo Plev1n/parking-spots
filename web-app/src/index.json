@@ -1,4 +1,5 @@
-[{
+[
+    {
         "parkingSpotLatitude": 49.190008,
         "parkingSpotLongitude": 16.620146,
         "distanceParking": 1615.0,
@@ -9,7 +10,7 @@
         "stroller": false,
         "wheelchair": false,
         "charger": false
-    }, 
+    },
     {
         "parkingSpotLatitude": 49.1962,
         "parkingSpotLongitude": 16.611305,
@@ -21,7 +22,7 @@
         "stroller": false,
         "wheelchair": false,
         "charger": false
-    }, 
+    },
     {
         "parkingSpotLatitude": 49.196644,
         "parkingSpotLongitude": 16.605232,
@@ -33,7 +34,7 @@
         "stroller": false,
         "wheelchair": false,
         "charger": false
-    }, 
+    },
     {
         "parkingSpotLatitude": 49.197238,
         "parkingSpotLongitude": 16.606974,
@@ -45,7 +46,7 @@
         "stroller": false,
         "wheelchair": false,
         "charger": false
-    }, 
+    },
     {
         "parkingSpotLatitude": 49.190196,
         "parkingSpotLongitude": 16.615208,

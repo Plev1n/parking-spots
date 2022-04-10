@@ -7,6 +7,7 @@ import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import Card from '../../Components/Results/Card';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
+import data from "../../index.json"
 
 const theme = createTheme({
   components: {
@@ -34,6 +35,7 @@ const theme = createTheme({
 
 export const ResultsScreen = props => {
   const [buttonId, setButtonId] = React.useState(1)
+  const [isShownNext, showNext] = React.useState(false)
   const handleClick = (id) => {
     setButtonId(id)
   }
@@ -54,12 +56,18 @@ export const ResultsScreen = props => {
           <Button onClick={() => handleClick(3)} variant={buttonId === 3 ? "contained" : "outlined"} style={{ width: "200px" }}>vzdálenost</Button>
         </ButtonGroup>
       </ThemeProvider>
-      <div style={{ gap: "20px" }}>
-        <Card />
-        <Card />
-        <Card />
+
+    <Card data={data[0]} />
+    <Card data={data[1]} />
+    <Card data={data[2]} />
+    {isShownNext && (
+      <div>
+        <Card data={data[3]} />
+        <Card data={data[4]} />
       </div>
-      <Button onClick={() => alert("No more parking slots!")} variant="outlined" style={{ margin: "20px 0", width: "100%", borderColor: "rgba(0, 0, 0, 0.23)", color: "rgba(0, 0, 0, 0.63)", borderRadius: "10px" }}>Zobrazit další parkoviště</Button>
+    )}
+
+      <Button onClick={() => showNext(true)} variant="outlined" style={{ margin: "20px 0", width: "100%", borderColor: "rgba(0, 0, 0, 0.23)", color: "rgba(0, 0, 0, 0.63)", borderRadius: "10px" }}>Zobrazit další parkoviště</Button>
     </div>
   )
 }
