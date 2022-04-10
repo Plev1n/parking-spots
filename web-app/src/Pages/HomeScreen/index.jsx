@@ -16,14 +16,20 @@ export const HomeScreen = props => {
   const [startLon, setStartLon] = React.useState('');
   const [finishLon, setFinishLon] = React.useState('');
   const [parkingTime, setParkingTime] = React.useState(3600);
+  const [response, setResponse] = React.useState(null);
 
   const navigate = useNavigate();
 
   const handleSubmit = () => {
     const timeISO = time.toISOString()
     console.log(timeISO, parkingTime, startLat, startLon, finishLat, finishLon)
-
-    axios.post('http://127.0.0.1:5000/get_parking_spot', {
+    localStorage.setItem("parkingTime", parkingTime)
+    localStorage.setItem("time", timeISO)
+    localStorage.setItem("startLat", startLat)
+    localStorage.setItem("startLon", startLon)
+    localStorage.setItem("finishLon", finishLon)
+    localStorage.setItem("finishLat", finishLat)
+    axios.post('https://enigmatic-mountain-28502.herokuapp.com/get_parking_spot', {
       timeISO,
       startLat,
       startLon,
@@ -32,11 +38,12 @@ export const HomeScreen = props => {
       parkingTime
     })
       .then(function (response) {
-        console.log(response);
+        setResponse(response)
         navigate("/results");
       })
       .catch(function (error) {
         console.log(error);
+        navigate("/results");
       });
   }
 
