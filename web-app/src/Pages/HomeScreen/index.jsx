@@ -24,7 +24,7 @@ export const HomeScreen = props => {
     const timeISO = time.toISOString()
     console.log(timeISO, parkingTime, startLat, startLon, finishLat, finishLon)
 
-    axios.post('http://127.0.0.1:5000/get_parking_spot', {
+    axios.post('https://enigmatic-mountain-28502.herokuapp.com/get_parking_spot', {
       timeISO,
       startLat,
       startLon,
