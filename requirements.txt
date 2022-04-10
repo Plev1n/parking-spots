@@ -1,0 +1,8 @@
+Flask==2.1.1
+requests==2.27.0
+geojson==2.5.0
+googlemaps==4.6.0
+pandas==1.4.2
+geopandas==0.10.2
+gunicorn==19.7.1
+flask_cors==3.0.10
