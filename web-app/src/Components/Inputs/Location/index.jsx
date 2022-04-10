@@ -26,6 +26,7 @@ const Location = (props) => {
       props.setStartLon(lon)
     });
     setLocation(address)
+    localStorage.setItem("location", address)
   }
 
   const handleLocationSubmit = () => {
@@ -41,6 +42,7 @@ const Location = (props) => {
         (response) => {
           address = response.results[0].formatted_address;
           setLocation(address)
+          localStorage.setItem("location", address)
         },
         (error) => {
           console.error(error);
@@ -61,6 +63,7 @@ const Location = (props) => {
           (response) => {
             address = response.results[0].formatted_address;
             setLocation(address)
+            localStorage.setItem("location", address)
           },
           (error) => {
             console.error(error);
@@ -94,7 +97,7 @@ const Location = (props) => {
                 className: '',
               })}
               onClick={() => showSelect(!isSelectShown)}
-              style={{width: "500px"}}
+              style={{width: "100%"}}
               value={location}
             />
             <div className="autocomplete-dropdown-container">
